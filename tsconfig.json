@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "./",
+    "target": "es5",
+    "removeComments": true
+  },
+  "files": [
+    "./index.ts"
+  ]
+}

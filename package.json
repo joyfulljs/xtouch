@@ -1,0 +1,29 @@
+{
+  "name": "@joyfulljs/xtouch",
+  "version": "1.0.0",
+  "description": "bind touch or mouse event according to env",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joyfulljs/xtouch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joyfulljs/xtouch/issues"
+  },
+  "homepage": "https://github.com/joyfulljs/xtouch#readme",
+  "sideEffects": false,
+  "typings": "./index.d.ts",
+  "devDependencies": {
+    "@types/node": "^10.11.4",
+    "jest": "^25.1.0",
+    "jquery": "^3.4.1",
+    "typescript": "^3.7.5"
+  }
+}
