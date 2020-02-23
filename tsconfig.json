@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "./",
-    "target": "es5",
-    "removeComments": true
+    "outDir": "dist",
+    "target": "es6",
+    "noImplicitAny": true,
+    "removeComments": false,
+    "moduleResolution": "node"
   },
   "files": [
-    "./index.ts"
+    "index.ts"
   ]
 }

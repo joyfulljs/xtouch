@@ -1,29 +1,40 @@
 {
   "name": "@joyfulljs/xtouch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "bind touch or mouse event according to env",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "scripts": {
-    "build": "tsc",
-    "test": "jest"
+    "build": "tsc && rollup -c",
+    "test": "jest",
+    "start": "http-server"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joyfulljs/xtouch.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "touch",
+    "mouse"
+  ],
+  "author": "elvin zhu",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/joyfulljs/xtouch/issues"
   },
+  "files": [
+    "dist",
+    "index.d.ts"
+  ],
   "homepage": "https://github.com/joyfulljs/xtouch#readme",
   "sideEffects": false,
   "typings": "./index.d.ts",
   "devDependencies": {
-    "@types/node": "^13.7.0",
     "jest": "^25.1.0",
     "jquery": "^3.4.1",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "rollup": "^1.31.1",
+    "rollup-plugin-banner": "^0.2.1",
+    "rollup-plugin-terser": "^5.2.0"
   }
 }
