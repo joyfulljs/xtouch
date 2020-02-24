@@ -40,8 +40,8 @@ export default function XTouch(el, onStart, onMove, onEnd, onCancel) {
     var isTouchDevice = 'ontouchstart' in window;
     if (isTouchDevice) {
         on(el, 'touchstart', onStart);
-        on(el, 'touchmove', onMove);
-        on(el, 'touchend', onEnd);
+        on(window, 'touchmove', onMove);
+        on(window, 'touchend', onEnd);
         on(el, 'touchcancel', onCancel);
     }
     else {
@@ -70,19 +70,19 @@ export default function XTouch(el, onStart, onMove, onEnd, onCancel) {
             oldEnd_1(e);
         };
         on(el, 'mousedown', onStart);
-        on(el, 'mousemove', onMove);
+        on(window, 'mousemove', onMove);
         on(window, 'mouseup', onEnd);
     }
     return function unbind() {
         if (isTouchDevice) {
             off(el, 'touchstart', onStart);
-            off(el, 'touchmove', onMove);
-            off(el, 'touchend', onEnd);
+            off(window, 'touchmove', onMove);
+            off(window, 'touchend', onEnd);
             off(el, 'touchcancel', onCancel);
         }
         else {
             off(el, 'mousedown', onStart);
-            off(el, 'mousemove', onMove);
+            off(window, 'mousemove', onMove);
             off(window, 'mouseup', onEnd);
         }
     };
