@@ -1,9 +1,9 @@
 {
   "name": "@joyfulljs/xtouch",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "bind touch or mouse event according to env",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/index.c.js",
+  "module": "dist/index.js",
   "scripts": {
     "build": "tsc && rollup -c",
     "test": "jest",

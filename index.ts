@@ -1,17 +1,43 @@
-/// <reference path="./index.d.ts" />
 
+/**
+ * bind event
+ * @param target window | HTMLElement
+ * @param type event type
+ * @param handler event handler
+ * @param capture if capture phase
+ */
 export function on(target: Target, type: string, handler: EventHandler, capture: boolean = false) {
   target.addEventListener(type, handler, capture)
 }
 
+/**
+ * unbind event
+ * @param target window | HTMLElement
+ * @param type event type
+ * @param handler event handler
+ * @param capture if capture phase
+ */
 export function off(target: Target, type: string, handler: EventHandler, capture: boolean = false) {
   target.removeEventListener(type, handler, capture);
 }
 
+/**
+ * if position is out of visible screen
+ * @param x x coordinate
+ * @param y y coordinate
+ */
 export function withinBoundry(x: number, y: number) {
   return x >= 0 && x <= window.innerWidth && y >= 0 && y <= window.innerHeight;
 }
 
+/**
+ * bind mouse or touch event according to current env
+ * @param el  window | HTMLElement
+ * @param onStart on start handler
+ * @param onMove on move handler
+ * @param onEnd on end handler
+ * @param onCancel on cancel handler. useless in none-touch device.
+ */
 export default function XTouch(
   el: Target,
   onStart: EventHandler, onMove: EventHandler, onEnd: EventHandler, onCancel: EventHandler
@@ -27,18 +53,21 @@ export default function XTouch(
       oldMove = onMove,
       oldEnd = onEnd
     onStart = function (e) {
+      // @ts-ignore
       e.identifier = 0;
       // @ts-ignore
       e.touches = e.changedTouches = [e];
       oldStart(e);
     };
     onMove = function (e) {
+      // @ts-ignore
       e.identifier = 0;
       // @ts-ignore
       e.touches = e.changedTouches = [e];
       oldMove(e);
     };
     onEnd = function (e) {
+      // @ts-ignore
       e.identifier = 0;
       // @ts-ignore
       e.touches = [];
@@ -63,3 +92,6 @@ export default function XTouch(
     }
   };
 }
+
+type EventHandler = (e: TouchEvent) => void;
+type Target = Window | HTMLElement;

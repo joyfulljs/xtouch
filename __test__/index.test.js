@@ -1,4 +1,4 @@
-const XTouch = require('../dist/index.js').default;
+const XTouch = require('../dist/index.c.js').default;
 const $ = require('jquery');
 
 const oldWinAddEvt = window.addEventListener;
