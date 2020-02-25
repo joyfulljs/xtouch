@@ -1,18 +1,10 @@
 const XTouch = require('../dist/index.c.js').default;
 const $ = require('jquery');
+const jestUtils = require('@joyfulljs/jest-utils');
 
-const oldWinAddEvt = window.addEventListener;
-const oldElAddEvt = HTMLElement.prototype.addEventListener;
+jestUtils.mockEventBinding();
 
 beforeEach(() => {
-  window.addEventListener = function (type, fn) {
-    window.addEventListener = oldWinAddEvt;
-    $(this).on(type, fn);
-  }
-  HTMLElement.prototype.addEventListener = function (type, fn) {
-    HTMLElement.prototype.addEventListener = oldElAddEvt;
-    $(this).on(type, fn);
-  }
   delete window.ontouchstart;
 });
 
@@ -27,8 +19,14 @@ test('bind touch device correctly', () => {
 
   XTouch(div, onStart, onMove, onEnd, onCancel);
 
-  $(div).trigger('touchstart');
+  $(div).trigger('touchstart')
+    .trigger('touchcancel');
+  $(window).trigger('touchmove')
+    .trigger('touchend');
   expect(onStart).toHaveBeenCalledTimes(1);
+  expect(onMove).toHaveBeenCalledTimes(1);
+  expect(onEnd).toHaveBeenCalledTimes(1);
+  expect(onCancel).toHaveBeenCalledTimes(1);
 });
 
 test('bind none-touch device correctly', () => {
@@ -42,5 +40,9 @@ test('bind none-touch device correctly', () => {
   XTouch(div, onStart, onMove, onEnd, onCancel);
 
   $(div).trigger('mousedown');
+  $(window).trigger('mousemove')
+    .trigger('mouseup');
   expect(onStart).toHaveBeenCalledTimes(1);
+  expect(onMove).toHaveBeenCalledTimes(1);
+  expect(onMove).toHaveBeenCalledTimes(1);
 });

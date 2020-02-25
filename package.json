@@ -30,11 +30,12 @@
   "sideEffects": false,
   "typings": "./index.d.ts",
   "devDependencies": {
+    "@joyfulljs/jest-utils": "^1.0.1",
     "jest": "^25.1.0",
     "jquery": "^3.4.1",
-    "typescript": "^3.7.5",
     "rollup": "^1.31.1",
     "rollup-plugin-banner": "^0.2.1",
-    "rollup-plugin-terser": "^5.2.0"
+    "rollup-plugin-terser": "^5.2.0",
+    "typescript": "^3.7.5"
   }
 }
