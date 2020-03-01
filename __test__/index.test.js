@@ -15,21 +15,18 @@ test('bind touch device correctly', () => {
   const onStart = jest.fn();
   const onMove = jest.fn();
   const onEnd = jest.fn();
-  const onCancel = jest.fn();
 
-  XTouch(div, onStart, onMove, onEnd, onCancel);
+  XTouch(div, { onStart, onMove, onEnd });
 
-  $(div).trigger('touchstart')
-    .trigger('touchcancel');
+  $(div).trigger('touchstart');
   $(window).trigger('touchmove')
     .trigger('touchend');
   expect(onStart).toHaveBeenCalledTimes(1);
   expect(onMove).toHaveBeenCalledTimes(1);
   expect(onEnd).toHaveBeenCalledTimes(1);
-  expect(onCancel).toHaveBeenCalledTimes(1);
 });
 
-test('bind none-touch device correctly', () => {
+test('bind mouse device correctly', () => {
   const div = document.createElement('div');
 
   const onStart = jest.fn();
@@ -37,7 +34,7 @@ test('bind none-touch device correctly', () => {
   const onEnd = jest.fn();
   const onCancel = jest.fn();
 
-  XTouch(div, onStart, onMove, onEnd, onCancel);
+  XTouch(div, { onStart, onMove, onEnd });
 
   $(div).trigger('mousedown');
   $(window).trigger('mousemove')
