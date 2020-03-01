@@ -21,14 +21,32 @@ export declare function off(target: Target, type: string, handler: EventHandler,
  */
 export declare function withinBoundry(x: number, y: number): boolean;
 /**
- * bind mouse or touch event according to current env
- * @param el  window | HTMLElement
- * @param onStart on start handler
- * @param onMove on move handler
- * @param onEnd on end handler
- * @param onCancel on cancel handler. useless in none-touch device.
+ * To bind event
+ * @param el taget element. required.
+ * @param options event handlers and other configration. required.
  */
-export default function XTouch(el: Target, onStart: EventHandler, onMove: EventHandler, onEnd: EventHandler, capture: boolean): () => void;
+export default function XTouch(el: Target, options: IOptions): () => void;
+/**
+ * configration options
+ */
+export interface IOptions {
+    /**
+    * use 'capture' phase
+    */
+    capture: boolean;
+    /**
+     * touchstart/mousedown event handler
+     */
+    onStart: EventHandler;
+    /**
+     * touchmove/mousemove event handler
+     */
+    onMove: EventHandler;
+    /**
+     * touchend/mouseup event handler
+     */
+    onEnd: EventHandler;
+}
 /**
  * event callback.
  */

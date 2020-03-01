@@ -33,17 +33,17 @@ function withinBoundry(x, y) {
     return x >= 0 && x <= window.innerWidth && y >= 0 && y <= window.innerHeight;
 }
 /**
- * bind mouse or touch event according to current env
- * @param el  window | HTMLElement
- * @param onStart on start handler
- * @param onMove on move handler
- * @param onEnd on end handler
- * @param onCancel on cancel handler. useless in none-touch device.
+ * To bind event
+ * @param el taget element. required.
+ * @param options event handlers and other configration. required.
  */
-function XTouch(el, onStart, onMove, onEnd, capture) {
-    var oldStart = onStart, oldMove = onMove, oldEnd = onEnd;
+function XTouch(el, options) {
+    if (Object.prototype.toString.call(options) !== '[object Object]') {
+        throw new Error('[xtouch]: argument `options` is missing or illegal.');
+    }
+    var onStart = options.onStart, onMove = options.onMove, onEnd = options.onEnd, capture = options.capture;
     var startTarget = null;
-    onStart = function (e) {
+    var _onStart = function (e) {
         if (e.type === 'mousedown') {
             startTarget = e.target;
             // @ts-ignore
@@ -53,9 +53,8 @@ function XTouch(el, onStart, onMove, onEnd, capture) {
             // @ts-ignore
             e.targetTouches = [e];
         }
-        oldStart(e);
-    };
-    onMove = function (e) {
+        onStart(e);
+    }, _onMove = function (e) {
         if (e.type === 'mousemove') {
             // @ts-ignore
             e.identifier = 0;
@@ -64,9 +63,8 @@ function XTouch(el, onStart, onMove, onEnd, capture) {
             // @ts-ignore
             e.targetTouches = e.target === startTarget ? [e] : [];
         }
-        oldMove(e);
-    };
-    onEnd = function (e) {
+        onMove(e);
+    }, _onEnd = function (e) {
         if (e.type === 'mouseup') {
             // @ts-ignore
             e.identifier = 0;
@@ -77,23 +75,27 @@ function XTouch(el, onStart, onMove, onEnd, capture) {
             // @ts-ignore
             e.targetTouches = e.target === startTarget ? [e] : [];
         }
-        oldEnd(e);
+        onEnd(e);
     };
-    // touch event
-    on(el, 'touchstart', onStart);
-    on(window, 'touchmove', onMove);
-    on(window, 'touchend', onEnd);
-    // mouse event
-    on(el, 'mousedown', onStart);
-    on(window, 'mousemove', onMove);
-    on(window, 'mouseup', onEnd);
+    if (onStart) {
+        on(el, 'touchstart', _onStart, capture);
+        on(el, 'mousedown', _onStart, capture);
+    }
+    if (onMove) {
+        on(window, 'touchmove', _onMove, capture);
+        on(window, 'mousemove', _onMove, capture);
+    }
+    if (onEnd) {
+        on(window, 'touchend', _onEnd, capture);
+        on(window, 'mouseup', _onEnd, capture);
+    }
     return function unbind() {
-        off(el, 'touchstart', onStart);
-        off(window, 'touchmove', onMove);
-        off(window, 'touchend', onEnd);
-        off(el, 'mousedown', onStart);
-        off(window, 'mousemove', onMove);
-        off(window, 'mouseup', onEnd);
+        off(el, 'touchstart', _onStart, capture);
+        off(window, 'touchmove', _onMove, capture);
+        off(window, 'touchend', _onEnd, capture);
+        off(el, 'mousedown', _onStart, capture);
+        off(window, 'mousemove', _onMove, capture);
+        off(window, 'mouseup', _onEnd, capture);
     };
 }
 

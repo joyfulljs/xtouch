@@ -31,25 +31,20 @@ export function withinBoundry(x: number, y: number) {
 }
 
 /**
- * bind mouse or touch event according to current env
- * @param el  window | HTMLElement
- * @param onStart on start handler
- * @param onMove on move handler
- * @param onEnd on end handler
- * @param onCancel on cancel handler. useless in none-touch device.
+ * To bind event
+ * @param el taget element. required.
+ * @param options event handlers and other configration. required.
  */
-export default function XTouch(
-  el: Target,
-  onStart: EventHandler, onMove: EventHandler, onEnd: EventHandler,
-  capture: boolean
-) {
+export default function XTouch(el: Target, options: IOptions) {
 
-  const oldStart = onStart,
-    oldMove = onMove,
-    oldEnd = onEnd;
+  if (Object.prototype.toString.call(options) !== '[object Object]') {
+    throw new Error('[xtouch]: argument `options` is missing or illegal.')
+  }
+
+  const { onStart, onMove, onEnd, capture } = options;
   let startTarget: EventTarget = null;
 
-  onStart = function (e) {
+  const _onStart: EventHandler = function (e) {
     if (e.type === 'mousedown') {
       startTarget = e.target;
       // @ts-ignore
@@ -59,9 +54,8 @@ export default function XTouch(
       // @ts-ignore
       e.targetTouches = [e];
     }
-    oldStart(e);
-  };
-  onMove = function (e) {
+    onStart(e);
+  }, _onMove: EventHandler = function (e) {
     if (e.type === 'mousemove') {
       // @ts-ignore
       e.identifier = 0;
@@ -70,9 +64,8 @@ export default function XTouch(
       // @ts-ignore
       e.targetTouches = e.target === startTarget ? [e] : [];
     }
-    oldMove(e);
-  };
-  onEnd = function (e) {
+    onMove(e);
+  }, _onEnd: EventHandler = function (e) {
     if (e.type === 'mouseup') {
       // @ts-ignore
       e.identifier = 0;
@@ -83,26 +76,52 @@ export default function XTouch(
       // @ts-ignore
       e.targetTouches = e.target === startTarget ? [e] : [];
     }
-    oldEnd(e);
+    onEnd(e);
   };
 
-  // touch event
-  on(el, 'touchstart', onStart, capture);
-  on(window, 'touchmove', onMove, capture);
-  on(window, 'touchend', onEnd, capture);
-  // mouse event
-  on(el, 'mousedown', onStart, capture);
-  on(window, 'mousemove', onMove, capture);
-  on(window, 'mouseup', onEnd, capture);
+  if (onStart) {
+    on(el, 'touchstart', _onStart, capture);
+    on(el, 'mousedown', _onStart, capture);
+  }
+  if (onMove) {
+    on(window, 'touchmove', _onMove, capture);
+    on(window, 'mousemove', _onMove, capture);
+  }
+  if (onEnd) {
+    on(window, 'touchend', _onEnd, capture);
+    on(window, 'mouseup', _onEnd, capture);
+  }
 
   return function unbind() {
-    off(el, 'touchstart', onStart, capture);
-    off(window, 'touchmove', onMove, capture);
-    off(window, 'touchend', onEnd, capture);
-    off(el, 'mousedown', onStart, capture);
-    off(window, 'mousemove', onMove, capture);
-    off(window, 'mouseup', onEnd, capture);
+    off(el, 'touchstart', _onStart, capture);
+    off(window, 'touchmove', _onMove, capture);
+    off(window, 'touchend', _onEnd, capture);
+    off(el, 'mousedown', _onStart, capture);
+    off(window, 'mousemove', _onMove, capture);
+    off(window, 'mouseup', _onEnd, capture);
   };
+}
+
+/**
+ * configration options
+ */
+export interface IOptions {
+  /**
+  * use 'capture' phase
+  */
+  capture: boolean
+  /**
+   * touchstart/mousedown event handler
+   */
+  onStart: EventHandler;
+  /**
+   * touchmove/mousemove event handler
+   */
+  onMove: EventHandler;
+  /**
+   * touchend/mouseup event handler
+   */
+  onEnd: EventHandler;
 }
 
 /**
