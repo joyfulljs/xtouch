@@ -40,55 +40,60 @@ function withinBoundry(x, y) {
  * @param onEnd on end handler
  * @param onCancel on cancel handler. useless in none-touch device.
  */
-function XTouch(el, onStart, onMove, onEnd, onCancel) {
-    var isTouchDevice = 'ontouchstart' in window;
-    if (isTouchDevice) {
-        on(el, 'touchstart', onStart);
-        on(window, 'touchmove', onMove);
-        on(window, 'touchend', onEnd);
-        on(el, 'touchcancel', onCancel);
-    }
-    else {
-        var oldStart_1 = onStart, oldMove_1 = onMove, oldEnd_1 = onEnd;
-        onStart = function (e) {
+function XTouch(el, onStart, onMove, onEnd, capture) {
+    var oldStart = onStart, oldMove = onMove, oldEnd = onEnd;
+    var startTarget = null;
+    onStart = function (e) {
+        if (e.type === 'mousedown') {
+            startTarget = e.target;
             // @ts-ignore
             e.identifier = 0;
             // @ts-ignore
             e.touches = e.changedTouches = [e];
-            oldStart_1(e);
-        };
-        onMove = function (e) {
+            // @ts-ignore
+            e.targetTouches = [e];
+        }
+        oldStart(e);
+    };
+    onMove = function (e) {
+        if (e.type === 'mousemove') {
             // @ts-ignore
             e.identifier = 0;
             // @ts-ignore
             e.touches = e.changedTouches = [e];
-            oldMove_1(e);
-        };
-        onEnd = function (e) {
+            // @ts-ignore
+            e.targetTouches = e.target === startTarget ? [e] : [];
+        }
+        oldMove(e);
+    };
+    onEnd = function (e) {
+        if (e.type === 'mouseup') {
             // @ts-ignore
             e.identifier = 0;
             // @ts-ignore
             e.touches = [];
             // @ts-ignore
             e.changedTouches = [e];
-            oldEnd_1(e);
-        };
-        on(el, 'mousedown', onStart);
-        on(window, 'mousemove', onMove);
-        on(window, 'mouseup', onEnd);
-    }
+            // @ts-ignore
+            e.targetTouches = e.target === startTarget ? [e] : [];
+        }
+        oldEnd(e);
+    };
+    // touch event
+    on(el, 'touchstart', onStart);
+    on(window, 'touchmove', onMove);
+    on(window, 'touchend', onEnd);
+    // mouse event
+    on(el, 'mousedown', onStart);
+    on(window, 'mousemove', onMove);
+    on(window, 'mouseup', onEnd);
     return function unbind() {
-        if (isTouchDevice) {
-            off(el, 'touchstart', onStart);
-            off(window, 'touchmove', onMove);
-            off(window, 'touchend', onEnd);
-            off(el, 'touchcancel', onCancel);
-        }
-        else {
-            off(el, 'mousedown', onStart);
-            off(window, 'mousemove', onMove);
-            off(window, 'mouseup', onEnd);
-        }
+        off(el, 'touchstart', onStart);
+        off(window, 'touchmove', onMove);
+        off(window, 'touchend', onEnd);
+        off(el, 'mousedown', onStart);
+        off(window, 'mousemove', onMove);
+        off(window, 'mouseup', onEnd);
     };
 }
 

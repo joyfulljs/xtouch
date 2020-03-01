@@ -1,5 +1,6 @@
 # xtouch
-bind touch or mouse event according to env
+
+With `XTouch`, you only need to handle touch event only, it will just works fine on both touch device and mouse device or device that support boths.
 
 # useage
 ```JS
@@ -12,6 +13,10 @@ function onCancel(e){};
 
 XTouch(div, onStart, onMove, onEnd, onCancel);
 ```
+
+# api
+
+[docs](./index.d.ts)
 
 # license
 

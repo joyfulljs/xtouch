@@ -40,58 +40,76 @@ export function withinBoundry(x: number, y: number) {
  */
 export default function XTouch(
   el: Target,
-  onStart: EventHandler, onMove: EventHandler, onEnd: EventHandler, onCancel: EventHandler
+  onStart: EventHandler, onMove: EventHandler, onEnd: EventHandler,
+  capture: boolean
 ) {
-  const isTouchDevice = 'ontouchstart' in window;
-  if (isTouchDevice) {
-    on(el, 'touchstart', onStart);
-    on(window, 'touchmove', onMove);
-    on(window, 'touchend', onEnd);
-    on(el, 'touchcancel', onCancel);
-  } else {
-    const oldStart = onStart,
-      oldMove = onMove,
-      oldEnd = onEnd
-    onStart = function (e) {
+
+  const oldStart = onStart,
+    oldMove = onMove,
+    oldEnd = onEnd;
+  let startTarget: EventTarget = null;
+
+  onStart = function (e) {
+    if (e.type === 'mousedown') {
+      startTarget = e.target;
       // @ts-ignore
       e.identifier = 0;
       // @ts-ignore
       e.touches = e.changedTouches = [e];
-      oldStart(e);
-    };
-    onMove = function (e) {
+      // @ts-ignore
+      e.targetTouches = [e];
+    }
+    oldStart(e);
+  };
+  onMove = function (e) {
+    if (e.type === 'mousemove') {
       // @ts-ignore
       e.identifier = 0;
       // @ts-ignore
       e.touches = e.changedTouches = [e];
-      oldMove(e);
-    };
-    onEnd = function (e) {
+      // @ts-ignore
+      e.targetTouches = e.target === startTarget ? [e] : [];
+    }
+    oldMove(e);
+  };
+  onEnd = function (e) {
+    if (e.type === 'mouseup') {
       // @ts-ignore
       e.identifier = 0;
       // @ts-ignore
       e.touches = [];
       // @ts-ignore
       e.changedTouches = [e];
-      oldEnd(e);
-    };
-    on(el, 'mousedown', onStart);
-    on(window, 'mousemove', onMove);
-    on(window, 'mouseup', onEnd);
-  }
-  return function unbind() {
-    if (isTouchDevice) {
-      off(el, 'touchstart', onStart);
-      off(window, 'touchmove', onMove);
-      off(window, 'touchend', onEnd);
-      off(el, 'touchcancel', onCancel);
-    } else {
-      off(el, 'mousedown', onStart);
-      off(window, 'mousemove', onMove);
-      off(window, 'mouseup', onEnd);
+      // @ts-ignore
+      e.targetTouches = e.target === startTarget ? [e] : [];
     }
+    oldEnd(e);
+  };
+
+  // touch event
+  on(el, 'touchstart', onStart, capture);
+  on(window, 'touchmove', onMove, capture);
+  on(window, 'touchend', onEnd, capture);
+  // mouse event
+  on(el, 'mousedown', onStart, capture);
+  on(window, 'mousemove', onMove, capture);
+  on(window, 'mouseup', onEnd, capture);
+
+  return function unbind() {
+    off(el, 'touchstart', onStart, capture);
+    off(window, 'touchmove', onMove, capture);
+    off(window, 'touchend', onEnd, capture);
+    off(el, 'mousedown', onStart, capture);
+    off(window, 'mousemove', onMove, capture);
+    off(window, 'mouseup', onEnd, capture);
   };
 }
 
-type EventHandler = (e: TouchEvent) => void;
-type Target = Window | HTMLElement;
+/**
+ * event callback.
+ */
+export type EventHandler = (e: TouchEvent) => void;
+/**
+ * target that to bind event.
+ */
+export type Target = Window | HTMLElement;

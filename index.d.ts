@@ -28,7 +28,12 @@ export declare function withinBoundry(x: number, y: number): boolean;
  * @param onEnd on end handler
  * @param onCancel on cancel handler. useless in none-touch device.
  */
-export default function XTouch(el: Target, onStart: EventHandler, onMove: EventHandler, onEnd: EventHandler, onCancel: EventHandler): () => void;
-declare type EventHandler = (e: TouchEvent) => void;
-declare type Target = Window | HTMLElement;
-export {};
+export default function XTouch(el: Target, onStart: EventHandler, onMove: EventHandler, onEnd: EventHandler, capture: boolean): () => void;
+/**
+ * event callback.
+ */
+export declare type EventHandler = (e: TouchEvent) => void;
+/**
+ * target that to bind event.
+ */
+export declare type Target = Window | HTMLElement;
