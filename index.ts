@@ -107,9 +107,9 @@ export default function XTouch(el: Target, options: IOptions) {
  */
 export interface IOptions {
   /**
-  * use 'capture' phase
+  * use 'capture' phase. default to false.
   */
-  capture: boolean
+  capture?: boolean
   /**
    * touchstart/mousedown event handler
    */

@@ -1,7 +1,7 @@
 {
   "name": "@joyfulljs/xtouch",
   "version": "1.0.4",
-  "description": "bind touch or mouse event according to env",
+  "description": "bind touch or mouse event cross env",
   "main": "dist/index.c.js",
   "module": "dist/index.js",
   "scripts": {
