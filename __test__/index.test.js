@@ -4,13 +4,8 @@ const jestUtils = require('@joyfulljs/jest-utils');
 
 jestUtils.mockEventBinding();
 
-beforeEach(() => {
-  delete window.ontouchstart;
-});
-
 test('bind touch device correctly', () => {
   const div = document.createElement('div');
-  window.ontouchstart = undefined;
 
   const onStart = jest.fn();
   const onMove = jest.fn();
