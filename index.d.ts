@@ -5,7 +5,7 @@
  * @param handler event handler
  * @param capture if capture phase
  */
-export declare function on(target: Target, type: string, handler: EventHandler, capture?: boolean): void;
+export declare function on(target: Window | HTMLElement, type: string, handler: EventHandler, capture?: boolean | AddEventListenerOptions): void;
 /**
  * unbind event
  * @param target window | HTMLElement
@@ -13,7 +13,7 @@ export declare function on(target: Target, type: string, handler: EventHandler, 
  * @param handler event handler
  * @param capture if capture phase
  */
-export declare function off(target: Target, type: string, handler: EventHandler, capture?: boolean): void;
+export declare function off(target: Window | HTMLElement, type: string, handler: EventHandler, capture?: boolean | AddEventListenerOptions): void;
 /**
  * if position is out of visible screen
  * @param x x coordinate
@@ -25,15 +25,15 @@ export declare function withinBoundry(x: number, y: number): boolean;
  * @param el taget element. required.
  * @param options event handlers and other configration. required.
  */
-export default function XTouch(el: Target, options: IOptions): () => void;
+export default function XTouch(el: Window | HTMLElement, options: IOptions): () => void;
 /**
  * configration options
  */
 export interface IOptions {
     /**
-    * use 'capture' phase. default to false.
+    * the third arg for `addEventListenner`
     */
-    capture?: boolean;
+    capture?: boolean | AddEventListenerOptions;
     /**
      * touchstart/mousedown event handler
      */
@@ -51,7 +51,3 @@ export interface IOptions {
  * event callback.
  */
 export declare type EventHandler = (e: TouchEvent) => void;
-/**
- * target that to bind event.
- */
-export declare type Target = Window | HTMLElement;

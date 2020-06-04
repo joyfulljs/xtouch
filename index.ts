@@ -6,7 +6,7 @@
  * @param handler event handler
  * @param capture if capture phase
  */
-export function on(target: Target, type: string, handler: EventHandler, capture: boolean = false) {
+export function on(target: Window | HTMLElement, type: string, handler: EventHandler, capture: boolean | AddEventListenerOptions = false) {
   target.addEventListener(type, handler, capture)
 }
 
@@ -17,7 +17,7 @@ export function on(target: Target, type: string, handler: EventHandler, capture:
  * @param handler event handler
  * @param capture if capture phase
  */
-export function off(target: Target, type: string, handler: EventHandler, capture: boolean = false) {
+export function off(target: Window | HTMLElement, type: string, handler: EventHandler, capture: boolean | AddEventListenerOptions = false) {
   target.removeEventListener(type, handler, capture);
 }
 
@@ -35,7 +35,7 @@ export function withinBoundry(x: number, y: number) {
  * @param el taget element. required.
  * @param options event handlers and other configration. required.
  */
-export default function XTouch(el: Target, options: IOptions) {
+export default function XTouch(el: Window | HTMLElement, options: IOptions) {
 
   if (Object.prototype.toString.call(options) !== '[object Object]') {
     throw new Error('[xtouch]: argument `options` is missing or illegal.')
@@ -107,9 +107,9 @@ export default function XTouch(el: Target, options: IOptions) {
  */
 export interface IOptions {
   /**
-  * use 'capture' phase. default to false.
+  * the third arg for `addEventListenner`
   */
-  capture?: boolean
+  capture?: boolean | AddEventListenerOptions
   /**
    * touchstart/mousedown event handler
    */
@@ -128,7 +128,3 @@ export interface IOptions {
  * event callback.
  */
 export type EventHandler = (e: TouchEvent) => void;
-/**
- * target that to bind event.
- */
-export type Target = Window | HTMLElement;
